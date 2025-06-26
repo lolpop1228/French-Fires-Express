@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Fries Order Form</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 500px;
+      margin: auto;
+      padding: 20px;
+    }
+    label {
+      margin-top: 15px;
+      display: block;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>🍟 French Fries Order</h2>
+
+  <form id="orderForm"
+        action="YOUR_GOOGLE_FORM_ACTION_URL"
+        method="POST"
+        target="hidden_iframe"
+        onsubmit="submitted=true;">
+    
+    <label>Your Name:</label>
+    <input name="entry.1234567890" required> <!-- Replace with actual -->
+
+    <label>Size:</label>
+    <select name="entry.2345678901" required> <!-- Replace with actual -->
+      <option value="Small">Small</option>
+      <option value="Medium">Medium</option>
+      <option value="Large">Large</option>
+    </select>
+
+    <label>Sauce:</label>
+    <input type="checkbox" name="entry.3456789012" value="Cheese"> Cheese<br>
+    <input type="checkbox" name="entry.3456789012" value="BBQ"> BBQ<br>
+    <input type="checkbox" name="entry.3456789012" value="Spicy Mayo"> Spicy Mayo<br>
+
+    <label>Flavor:</label>
+    <input type="radio" name="entry.4567890123" value="Seaweed" required> Seaweed<br>
+    <input type="radio" name="entry.4567890123" value="Cheese" required> Cheese<br>
+
+    <!-- Hidden fields for GPS -->
+    <input type="hidden" name="entry.5678901234" id="latitude">  <!-- Replace -->
+    <input type="hidden" name="entry.6789012345" id="longitude"> <!-- Replace -->
+
+    <p id="status">📍 Getting location...</p>
+
+    <button type="submit">Send Order</button>
+  </form>
+
+  <!-- Invisible iframe to avoid page reload -->
+  <iframe name="hidden_iframe" style="display:none;" onload="if(submitted) alert('✅ Order received! We’ll deliver soon!');"></iframe>
+
+  <script>
+    let submitted = false;
+
+    function setLocationFields(lat, lon) {
+      document.getElementById('latitude').value = lat;
+      document.getElementById('longitude').value = lon;
+      document.getElementById('status').textContent = `📍 Location set: ${lat.toFixed(5)}, ${lon.toFixed(5)}`;
+    }
+
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          position => {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            setLocationFields(lat, lon);
+          },
+          error => {
+            document.getElementById('status').textContent = '❌ Could not get location. Please allow GPS access.';
+          }
+        );
+      } else {
+        document.getElementById('status').textContent = '❌ Geolocation not supported in this browser.';
+      }
+    }
+
+    window.onload = getLocation;
+  </script>
+
+</body>
+</html>
